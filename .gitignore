@@ -1,0 +1,6 @@
+.idea/
+*.iml
+target/
+
+config/application.properties
+consfig/mappings.json
