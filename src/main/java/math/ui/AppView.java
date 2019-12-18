@@ -1,54 +1,36 @@
 package math.ui;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.function.Consumer;
 
 import javax.swing.*;
 
 public class AppView extends JFrame {
-	JPanel buttonsPanel;
-	JLabel statusLabel;
 	MainController mainController;
 
 	public AppView(MainController mainController) {
 		super("Math");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.mainController = mainController;
-		createControls();
+//		setPreferredSize(new Dimension(800, 600));
+		setLayout(null);
+		setSize(600, 600);
+
+
 	}
 
-	private void createControls() {
-		JPanel root = new JPanel();
-		root.setLayout(new BoxLayout(root, BoxLayout.Y_AXIS));
+	public void setComponent(Component component) {
+		//removeAll();
 
-		JPanel statusPanel = new JPanel();
-		statusPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		JButton settings = new JButton("Settings");
-		settings.addActionListener((e) -> mainController.showSettings());
-		statusPanel.add(settings);
-		statusLabel = new JLabel();
-		statusPanel.add(statusLabel);
+//		component.setBounds(100, 100, 500, 500);
+//		component.setBackground(Color.BLACK);
+//		add(component);
+		JPanel panel = new StartView(mainController);
+		panel.setBounds(50,50, 500, 500);
 
-		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(1, 2));
-		mainPanel.add(createButtonsPanel());
+		JButton button = new JButton("test");
+		button.setBounds(10, 10, 100, 50);
+		panel.add(button);
 
-
-		root.add(statusPanel);
-		root.add(mainPanel);
-
-		add(root);
-		pack();
-		setLocationRelativeTo(null);
+		add(panel);
 	}
-
-	private JPanel createButtonsPanel() {
-		buttonsPanel = new JPanel();
-		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
-
-		return buttonsPanel;
-	}
-
-
 }

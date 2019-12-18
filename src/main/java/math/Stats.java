@@ -1,24 +1,27 @@
 package math;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import lombok.Data;
 
 @Data
 public class Stats {
-    private int[] errors = new int[100];
-    private int[] oks = new int[100];
+	private Map<String,List<Double>> scores = new HashMap<>();
 
-    public void updateStats(int a, int b, boolean ok) {
-        int i = a * b;
-        if (ok) {
-            oks[i]++;
+	public void addScore(String key, double score) {
+        List<Double> list = scores.computeIfAbsent(key, k -> new ArrayList<>());
+        list.add(0, score);
+	}
+
+	public double getAvgScore(String key, int limit) {
+        List<Double> list = scores.get(key);
+        if (list == null) {
+            return 0;
         } else {
-            errors[i]++;
+            return list.stream().limit(limit).mapToDouble(it -> it).average().orElse(0);
         }
-    }
-
-    public double getValue(int a, int b) {
-        int i = a * b;
-        double total = oks[i] + errors[i];
-        return oks[i] / total;
-    }
+	}
 }

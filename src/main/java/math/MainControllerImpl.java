@@ -2,11 +2,14 @@ package math;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import math.ui.MainController;
 import math.ui.AppView;
-import math.ui.SettingsDialog;
+import math.ui.StartView;
+import math.ui.StatsView;
 
 public class MainControllerImpl implements MainController {
 	ObjectMapper objectMapper = new ObjectMapper();
@@ -31,10 +34,11 @@ public class MainControllerImpl implements MainController {
 	}
 
 	private File getPropertiesFile() {
-		return new File(new File(System.getProperty("user.home")), "math.properties");
+		return new File(new File(System.getProperty("user.home")), "math.json");
 	}
 
-	private void saveSettings() {
+	@Override
+	public void saveSettings() {
 		try {
 			File file = getPropertiesFile();
 			objectMapper.writeValue(file, settings);
@@ -45,12 +49,7 @@ public class MainControllerImpl implements MainController {
 
 	public void start() {
 		appView.setVisible(true);
-	}
-
-	@Override
-	public void showSettings() {
-		SettingsDialog settingsView = new SettingsDialog(appView, this);
-		settingsView.setVisible(true);
+		showStart();
 	}
 
 	@Override
@@ -59,9 +58,23 @@ public class MainControllerImpl implements MainController {
 	}
 
 	@Override
-	public void applySettings() {
-		saveSettings();
-		//EventQueue.invokeLater(() -> mainView.createButtons(settings.getButtonsCount()));
+	public List<Integer> getTests() {
+		return Arrays.asList(2,3,4,5,6,7,8,9);
+	}
+
+	@Override
+	public void startTest(int test) {
+
+	}
+
+	@Override
+	public void showStats() {
+		appView.setComponent(new StatsView(this));
+	}
+
+	@Override
+	public void showStart() {
+		appView.setComponent(new StartView(this));
 	}
 
 }

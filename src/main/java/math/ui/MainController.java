@@ -1,13 +1,20 @@
 package math.ui;
 
+import java.util.List;
+
 import math.Settings;
 
 public interface MainController {
 
-	void showSettings();
-
 	Settings getSettings();
 
-	void applySettings();
+	void saveSettings();
 
+	List<Integer> getTests();
+
+	void startTest(int test);
+
+	void showStats();
+
+	void showStart();
 }
