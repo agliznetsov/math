@@ -1,39 +1,46 @@
 package math.ui;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 
-public class StartView extends JPanel {
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import math.controller.MainController;
+
+public class StartView extends VBox {
 
 	public StartView(MainController mainController) {
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		add(createTests(mainController));
-		add(createStats(mainController));
+		setAlignment(Pos.CENTER);
+		createTests(mainController);
 	}
 
-	private Component createStats(MainController mainController) {
-		JButton button = new JButton("Stats");
-		button.setPreferredSize(new Dimension(50, 50));
-		button.addActionListener(e -> mainController.showStats());
-		return button;
-	}
+	private void createTests(MainController mainController) {
+		GridPane grid = new GridPane();
+		grid.setAlignment(Pos.CENTER);
+		this.getChildren().add(grid);
 
-	private Component createTests(MainController mainController) {
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(2, 4));
-		panel.setPreferredSize(new Dimension(100, 50));
-
+		int row = 0;
+		int col = 0;
 		for(int test : mainController.getTests()) {
-			JButton button = new JButton(String.valueOf(test));
-			button.setPreferredSize(new Dimension(50, 50));
-			button.addActionListener(e -> mainController.startTest(test));
-			panel.add(button);
+			Button btn = new Button();
+			btn.setFont(new Font(24));
+			btn.setPrefSize(50, 50);
+			btn.setText(String.valueOf(test));
+			btn.setOnAction((e) -> mainController.startTest(test));
+			grid.add(btn, col++, row);
+			if (col == 4) {
+				col = 0;
+				row++;
+			}
 		}
 
-		return panel;
+		Button btn = new Button();
+		btn.setText("Stats");
+		btn.setFont(new Font(24));
+		btn.setPrefSize(200, 50);
+		btn.setOnAction((event) -> mainController.showStats());
+		grid.add(btn, 0, row + 2, 4, 1);
 	}
 
 }

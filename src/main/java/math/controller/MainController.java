@@ -1,4 +1,4 @@
-package math;
+package math.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,27 +6,31 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import math.ui.MainController;
-import math.ui.AppView;
+
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import math.model.Settings;
 import math.ui.StartView;
 import math.ui.StatsView;
+import math.ui.TestView;
 
-public class MainControllerImpl implements MainController {
+public class MainController {
 	ObjectMapper objectMapper = new ObjectMapper();
-	AppView appView;
+	Stage stage;
 	Settings settings;
 
-	public MainControllerImpl() {
+	public MainController(Stage stage) {
 		loadSettings();
-		this.appView = new AppView(this);
+		this.stage = stage;
 	}
 
 	private void loadSettings() {
-		settings = new Settings();
 		try {
 			File file = getPropertiesFile();
 			if (file.exists()) {
-				objectMapper.readValue(file, Settings.class);
+				settings = objectMapper.readValue(file, Settings.class);
+			} else {
+				settings = new Settings();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -37,7 +41,6 @@ public class MainControllerImpl implements MainController {
 		return new File(new File(System.getProperty("user.home")), "math.json");
 	}
 
-	@Override
 	public void saveSettings() {
 		try {
 			File file = getPropertiesFile();
@@ -48,33 +51,33 @@ public class MainControllerImpl implements MainController {
 	}
 
 	public void start() {
-		appView.setVisible(true);
 		showStart();
+		stage.setTitle("Math");
+		stage.show();
 	}
 
-	@Override
 	public Settings getSettings() {
 		return settings;
 	}
 
-	@Override
 	public List<Integer> getTests() {
 		return Arrays.asList(2,3,4,5,6,7,8,9);
 	}
 
-	@Override
 	public void startTest(int test) {
-
+		TestController testController = new TestController(this);
+		TestView testView = new TestView(testController);
+		testController.start(testView, test);
+		stage.setScene(new Scene(testView, 500, 500));
 	}
 
-	@Override
 	public void showStats() {
-		appView.setComponent(new StatsView(this));
+		stage.setScene(new Scene(new StatsView(this), 500, 500));
 	}
 
-	@Override
+	
 	public void showStart() {
-		appView.setComponent(new StartView(this));
+		stage.setScene(new Scene(new StartView(this), 500, 500));
 	}
 
 }
