@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalDouble;
+import java.util.function.Predicate;
 
 import lombok.Data;
 
@@ -16,20 +18,24 @@ public class Stats {
 		list.add(0, score);
 	}
 
-	public Double getScore(int test) {
-		return getAvgScore(String.valueOf(test), 5);
+	public Double getAvgScore(Predicate<String> key, int limit) {
+		OptionalDouble res = scores.entrySet().stream()
+				.filter(e -> key.test(e.getKey()))
+				.mapToDouble(e -> getAvgScore(e.getValue(), limit))
+				.average();
+		return res.isPresent() ? res.getAsDouble() : null;
 	}
 
-	public Double getScore(int test, int argument) {
-		return getAvgScore(argument + "x" + test, 5);
-	}
-
-	private Double getAvgScore(String key, int limit) {
+	public Double getAvgScore(String key, int limit) {
 		List<Double> list = scores.get(key);
 		if (list == null) {
 			return null;
 		} else {
-			return list.stream().limit(limit).mapToDouble(it -> it).average().getAsDouble();
+			return getAvgScore(list, limit);
 		}
+	}
+
+	private Double getAvgScore(List<Double> list, int limit) {
+		return list.stream().limit(limit).mapToDouble(it -> it).average().getAsDouble();
 	}
 }

@@ -3,7 +3,6 @@ package math.ui;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -18,8 +17,6 @@ import javafx.scene.text.Font;
 import math.controller.TestController;
 
 public class TestView extends VBox {
-	private static ExecutorService executor = Executors.newSingleThreadExecutor();
-
 	private GridPane grid;
 	private final TestController testController;
 
@@ -62,7 +59,7 @@ public class TestView extends VBox {
 			if (it instanceof Button) {
 				Button button = (Button) it;
 				if (button.getText().equals(String.valueOf(answer))) {
-					executor.submit(() -> animate(button, UI.background(correct ? Color.GREEN : Color.RED), callback));
+					testController.getExecutor().submit(() -> animate(button, UI.background(correct ? Color.GREEN : Color.RED), callback));
 				}
 			}
 		}

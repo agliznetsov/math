@@ -18,7 +18,7 @@ public class UI {
 		} else if (value < 10 ) {
 			return Color.YELLOW;
 		} else {
-			return Color.GREEN;
+			return Color.LIGHTGREEN;
 		}
 	}
 }

@@ -2,28 +2,33 @@ package math.controller;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
 
+import math.model.Question;
 import math.ui.TestView;
 
 public class TestController {
-	static List<Integer> allAnswers = new ArrayList<>();
+	static Map<Integer,List<Question>> allQuestions = new HashMap<>();
 
 	static {
-		for (int a = 0; a < 10; a++) {
-			for (int b = 0; b < 10; b++) {
-				allAnswers.add(a * b);
+		for (int b = 0; b < 10; b++) {
+			List<Question> list = new ArrayList<>();
+			for (int a = 0; a < 10; a++) {
+				list.add(new Question(a, b));
 			}
+			allQuestions.put(b, list);
 		}
 	}
 
 	Random random = new Random();
 	MainController mainController;
-	int test;
 	TestView testView;
 	int index = 0;
-	List<Integer> questions = new ArrayList<>();
+	List<Question> questions = new ArrayList<>();
 	List<Boolean> answers = new ArrayList<>();
 
 
@@ -31,37 +36,38 @@ public class TestController {
 		this.mainController = mainController;
 	}
 
-	public void start(TestView testView, int test) {
+	public void start(TestView testView, Integer multiplier) {
 		this.testView = testView;
-		this.test = test;
 		this.index = 0;
 		this.questions.clear();
 		this.answers.clear();
-		for (int i = 0; i < 10; i++) {
-			questions.add(i);
+		if (multiplier != null) {
+			questions.addAll(allQuestions.get(multiplier));
+		} else {
+			for (int i = 0; i < 10; i++) {
+				questions.add(allQuestions.get(i).get(random.nextInt(10)));
+			}
 		}
 		Collections.shuffle(questions);
 		showQuestion();
 	}
 
 	private void showQuestion() {
-		String question = questions.get(index) + " x " + test;
-
 		List<Integer> questionAnswers = new ArrayList<>();
-		questionAnswers.add(questions.get(index) * test);
+		questionAnswers.add(questions.get(index).answer());
 		while (questionAnswers.size() < 4) {
-			int a = allAnswers.get(random.nextInt(allAnswers.size()));
+			int a = allQuestions.get(random.nextInt(10)).get(random.nextInt(10)).answer();
 			if (!questionAnswers.contains(a)) {
 				questionAnswers.add(a);
 			}
 		}
 		Collections.shuffle(questionAnswers);
 
-		testView.showQuestion(question, questionAnswers);
+		testView.showQuestion(questions.get(index).toString(), questionAnswers);
 	}
 
 	public void answer(int answer) {
-		boolean correct = answer == questions.get(index) * test;
+		boolean correct = answer == questions.get(index).answer();
 		if (answers.size() == index) {
 			answers.add(correct);
 		}
@@ -81,18 +87,21 @@ public class TestController {
 	private void endTest() {
 		int correctAnswers = 0;
 		for (int i = 0; i < questions.size(); i++) {
-			String key = questions.get(i) + "x" + test;
-			mainController.getSettings().getStats().addScore(key, answers.get(i) ? 1 : 0);
+			String key = questions.get(i).key();
+			mainController.getStats().addScore(key, answers.get(i) ? 1 : 0);
 			if (answers.get(i)) {
 				correctAnswers++;
 			}
 		}
-		mainController.getSettings().getStats().addScore(String.valueOf(test), correctAnswers * 1.0 / answers.size());
-		mainController.saveSettings();
+		mainController.saveStats();
 		testView.showResult(correctAnswers + " / " + answers.size());
 	}
 
 	public void showStart() {
 		mainController.showStart();
+	}
+
+	public ExecutorService getExecutor() {
+		return mainController.getExecutor();
 	}
 }

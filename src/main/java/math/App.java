@@ -15,6 +15,9 @@ public class App extends Application {
 	public void start(Stage stage) throws Exception {
 		MainController controller = new MainController(stage);
 		controller.start();
+		stage.setOnCloseRequest(e -> {
+			controller.shutdown();
+		});
 	}
 
 }

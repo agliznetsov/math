@@ -7,8 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import math.controller.MainController;
+import math.model.Question;
 
 public class StatsView extends VBox {
 
@@ -43,15 +43,15 @@ public class StatsView extends VBox {
 		}
 
 		col++;
-		for (int test : mainController.getTests()) {
+		for (int multiplier = 0; multiplier < 10; multiplier++) {
 			for (int i = 0; i <= 11; i++) {
 				Label label = new Label();
 				if (i == 0) {
-					label.setText(String.valueOf(test));
+					label.setText(String.valueOf(multiplier));
 				} else if (i == 1) {
-					setValue(label, mainController.getSettings().getStats().getScore(test));
+					setValue(label, mainController.getStats().getAvgScore(Question.predicate(multiplier), 5));
 				} else {
-					setValue(label, mainController.getSettings().getStats().getScore(test, i - 2));
+					setValue(label, mainController.getStats().getAvgScore(new Question(i - 2, multiplier).key(), 5));
 				}
 				label.setPrefSize(50, 10);
 				label.setPadding(new Insets(5));
