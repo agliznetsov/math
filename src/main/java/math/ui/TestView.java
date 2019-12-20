@@ -1,8 +1,6 @@
 package math.ui;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -85,16 +83,28 @@ public class TestView extends VBox {
 		}
 	}
 
-	public void showResult(String text) {
+	public void showResult(String text, long totalTime) {
 		getChildren().clear();
 
-		Label label = new Label(text);
-		label.setPadding(new Insets(10));
-		label.setFont(new Font(32));
-		getChildren().add(label);
+		getChildren().add(createLabel(text));
+		getChildren().add(createLabel(formatTime(totalTime)));
 
 		Button btn = new Button("OK");
 		btn.setOnAction((e) -> testController.showStart());
 		getChildren().add(btn);
+	}
+
+	protected static String formatTime(long totalTime) {
+		int time = (int) (totalTime / 1_000);
+		int min = time / 60;
+		int sec = time % 60;
+		return String.format("%d:%02d", min, sec);
+	}
+
+	private Label createLabel(String text) {
+		Label label = new Label(text);
+		label.setPadding(new Insets(10));
+		label.setFont(new Font(32));
+		return label;
 	}
 }

@@ -28,6 +28,8 @@ public class TestController {
 	MainController mainController;
 	TestView testView;
 	int index = 0;
+	long start = 0;
+	long totalTime = 0;
 	List<Question> questions = new ArrayList<>();
 	List<Boolean> answers = new ArrayList<>();
 
@@ -64,15 +66,22 @@ public class TestController {
 		Collections.shuffle(questionAnswers);
 
 		testView.showQuestion(questions.get(index).toString(), questionAnswers);
+		resetTimer();
 	}
 
 	public void answer(int answer) {
+		long end = System.currentTimeMillis();
+		totalTime += (end - start);
 		boolean correct = answer == questions.get(index).answer();
 		if (answers.size() == index) {
 			answers.add(correct);
 		}
-		Runnable callback = correct ? this::nextQuestion : null;
+		Runnable callback = correct ? this::nextQuestion : this::resetTimer;
 		testView.feedBack(answer, correct, callback);
+	}
+
+	private void resetTimer() {
+		start = System.currentTimeMillis();
 	}
 
 	private void nextQuestion() {
@@ -93,8 +102,9 @@ public class TestController {
 				correctAnswers++;
 			}
 		}
+		mainController.getStats().addTime(totalTime / answers.size());
 		mainController.saveStats();
-		testView.showResult(correctAnswers + " / " + answers.size());
+		testView.showResult(correctAnswers + " / " + answers.size(), totalTime);
 	}
 
 	public void showStart() {

@@ -12,10 +12,15 @@ import lombok.Data;
 @Data
 public class Stats {
 	private Map<String,List<Double>> scores = new HashMap<>();
+	private List<Long> times = new ArrayList<>();
 
 	public void addScore(String key, double score) {
 		List<Double> list = scores.computeIfAbsent(key, k -> new ArrayList<>());
 		list.add(0, score);
+	}
+
+	public void addTime(long time) {
+		times.add(0, time);
 	}
 
 	public Double getAvgScore(Predicate<String> key, int limit) {
