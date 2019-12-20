@@ -6,15 +6,15 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import math.model.Settings;
+import math.model.Stats;
 
-public class SettingsTest {
+public class StatsTest {
 	ObjectMapper objectMapper = new ObjectMapper();
 
 	@Test
 	public void testSerialization() throws Exception {
-		String json = objectMapper.writeValueAsString(new Settings());
-		Settings settings = objectMapper.readValue(json, Settings.class);
-		assertNotNull(settings);
+		String json = objectMapper.writeValueAsString(new Stats());
+		Stats stats = objectMapper.readValue(json, Stats.class);
+		assertNotNull(stats);
 	}
 }
