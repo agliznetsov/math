@@ -2,8 +2,6 @@ package math.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
@@ -87,10 +85,10 @@ public class MainController {
 		return stats;
 	}
 
-	public void startTest(Integer test) {
+	public void startTest(Integer test, boolean withAnswers) {
 		TestController testController = new TestController(this);
 		TestView testView = new TestView(testController);
-		testController.start(testView, test);
+		testController.start(testView, test, withAnswers);
 		stage.setScene(new Scene(testView, 500, 500));
 	}
 

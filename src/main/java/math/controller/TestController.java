@@ -27,6 +27,7 @@ public class TestController {
 	Random random = new Random();
 	MainController mainController;
 	TestView testView;
+	boolean withAnswers;
 	int index = 0;
 	long start = 0;
 	long totalTime = 0;
@@ -38,7 +39,8 @@ public class TestController {
 		this.mainController = mainController;
 	}
 
-	public void start(TestView testView, Integer multiplier) {
+	public void start(TestView testView, Integer multiplier, boolean withAnswers) {
+		this.withAnswers = withAnswers;
 		this.testView = testView;
 		this.index = 0;
 		this.questions.clear();
@@ -55,7 +57,14 @@ public class TestController {
 	}
 
 	private void showQuestion() {
-		List<Integer> questionAnswers = new ArrayList<>();
+		List<Integer> questionAnswers = withAnswers ? getAnswers() : null;
+		testView.showQuestion(questions.get(index).toString(), questionAnswers);
+		resetTimer();
+	}
+
+	private List<Integer> getAnswers() {
+		List<Integer> questionAnswers;
+		questionAnswers = new ArrayList<>();
 		questionAnswers.add(questions.get(index).answer());
 		while (questionAnswers.size() < 4) {
 			int a = allQuestions.get(random.nextInt(10)).get(random.nextInt(10)).answer();
@@ -64,9 +73,7 @@ public class TestController {
 			}
 		}
 		Collections.shuffle(questionAnswers);
-
-		testView.showQuestion(questions.get(index).toString(), questionAnswers);
-		resetTimer();
+		return questionAnswers;
 	}
 
 	public void answer(int answer) {

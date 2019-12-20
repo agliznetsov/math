@@ -3,6 +3,7 @@ package math.ui;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -12,10 +13,12 @@ public class StartView extends VBox {
 
 	public StartView(MainController mainController) {
 		setAlignment(Pos.CENTER);
-		createTests(mainController);
-	}
 
-	private void createTests(MainController mainController) {
+		CheckBox checkBox = new CheckBox("Show answers");
+		checkBox.setSelected(true);
+		checkBox.setPrefSize(250, 50);
+		this.getChildren().add(checkBox);
+
 		GridPane grid = new GridPane();
 		grid.setAlignment(Pos.CENTER);
 		this.getChildren().add(grid);
@@ -28,7 +31,7 @@ public class StartView extends VBox {
 			btn.setFont(new Font(24));
 			btn.setPrefSize(50, 50);
 			btn.setText(String.valueOf(test));
-			btn.setOnAction((e) -> mainController.startTest(test));
+			btn.setOnAction((e) -> mainController.startTest(test, checkBox.isSelected()));
 			grid.add(btn, col++, row);
 			if (col == 5) {
 				col = 0;
@@ -40,7 +43,7 @@ public class StartView extends VBox {
 		btn.setText("0..9");
 		btn.setFont(new Font(24));
 		btn.setPrefSize(100, 50);
-		btn.setOnAction((event) -> mainController.startTest(null));
+		btn.setOnAction((event) -> mainController.startTest(null, checkBox.isSelected()));
 		grid.add(btn, 0, row + 2, 2, 1);
 
 		btn = new Button();

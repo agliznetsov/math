@@ -5,17 +5,18 @@ import java.util.List;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import math.controller.TestController;
 
 public class TestView extends VBox {
-	private GridPane grid;
+	private AnswerSelector answerSelector;
 	private final TestController testController;
 
 	public TestView(TestController testController) {
@@ -31,39 +32,22 @@ public class TestView extends VBox {
 		label.setPadding(new Insets(10));
 		this.getChildren().add(label);
 
-		grid = new GridPane();
-		grid.setVgap(5);
-		grid.setHgap(5);
-		grid.setAlignment(Pos.CENTER);
-		this.getChildren().add(grid);
-		int row = 0;
-		int col = 0;
-		for (Integer answer : answers) {
-			Button btn = new Button(String.valueOf(answer));
-			btn.setFont(new Font(24));
-			btn.setPrefSize(100, 100);
-			btn.setOnAction((e) -> testController.answer(answer));
-			grid.add(btn, col, row);
-			col++;
-			if (col >= answers.size() / 2) {
-				row++;
-				col = 0;
-			}
+		if (answers != null) {
+			answerSelector = new AnswersView(answers, testController::answer);
+		} else {
+			answerSelector = new CalculatorView(testController::answer);
 		}
+		this.getChildren().add((Node) answerSelector);
 	}
 
 	public void feedBack(int answer, boolean correct, Runnable callback) {
-		for (Object it : grid.getChildren()) {
-			if (it instanceof Button) {
-				Button button = (Button) it;
-				if (button.getText().equals(String.valueOf(answer))) {
-					testController.getExecutor().submit(() -> animate(button, UI.background(correct ? Color.GREEN : Color.RED), callback));
-				}
-			}
-		}
+		Region region = answerSelector.getAnswerRegion(answer);
+		testController.getExecutor().submit(() -> animate(region, UI.background(correct ? Color.GREEN : Color.RED), callback));
 	}
 
-	private void animate(Button button, Background background, Runnable callback) {
+	private void animate(Region button, Background background, Runnable callback) {
+		Node node = (Node) answerSelector;
+		node.setDisable(true);
 		Background original = button.getBackground();
 		for (int i = 0; i < 3; i++) {
 			button.setBackground(background);
@@ -74,6 +58,7 @@ public class TestView extends VBox {
 		if (callback != null) {
 			Platform.runLater(callback);
 		}
+		node.setDisable(false);
 	}
 
 	private void sleep(int value) {
