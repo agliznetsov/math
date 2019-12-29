@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class TestViewTest {
+public class TestViewQuiz {
 	@Test
 	public void formatTime() {
-		assertEquals("1:06", TestView.formatTime(66_000));
+		assertEquals("1:06", QuizView.formatTime(66_000));
 	}
 }

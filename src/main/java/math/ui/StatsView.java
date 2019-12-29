@@ -34,8 +34,8 @@ public class StatsView extends VBox {
 		this.getChildren().add(grid);
 
 		int col = 0;
-		for (int i = 0; i <= 10; i++) {
-			String text = i > 0 ? String.valueOf(i - 1) : "avg";
+		for (int i = 0; i < 10; i++) {
+			String text = String.valueOf(i);
 			Label label = new Label(text);
 			label.setPrefSize(50, 10);
 			label.setPadding(new Insets(5));
@@ -44,14 +44,12 @@ public class StatsView extends VBox {
 
 		col++;
 		for (int multiplier = 0; multiplier < 10; multiplier++) {
-			for (int i = 0; i <= 11; i++) {
+			for (int i = 0; i <= 10; i++) {
 				Label label = new Label();
 				if (i == 0) {
 					label.setText(String.valueOf(multiplier));
-				} else if (i == 1) {
-					setValue(label, mainController.getStats().getAvgScore(Question.predicate(multiplier), 5));
 				} else {
-					setValue(label, mainController.getStats().getAvgScore(new Question(i - 2, multiplier).key(), 5));
+					setValue(label, mainController.getStats().getScore(new Question(i - 1, multiplier).key()));
 				}
 				label.setPrefSize(50, 10);
 				label.setPadding(new Insets(5));
@@ -61,9 +59,9 @@ public class StatsView extends VBox {
 		}
 	}
 
-	private void setValue(Label label, Double score) {
-		if (score != null) {
-			int value = (int) Math.ceil(score * 10);
+	private void setValue(Label label, int score) {
+		if (score > 0) {
+			int value = score;
 			label.setText(String.valueOf(value));
 			label.setBackground(UI.background(UI.getColor(value)));
 		}

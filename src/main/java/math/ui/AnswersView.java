@@ -3,18 +3,11 @@ package math.ui;
 import java.util.List;
 import java.util.function.Consumer;
 
-import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import math.controller.TestController;
 
 public class AnswersView extends GridPane implements AnswerSelector {
 
@@ -24,18 +17,28 @@ public class AnswersView extends GridPane implements AnswerSelector {
 		setHgap(5);
 		int row = 0;
 		int col = 0;
-		for (Integer answer : answers) {
-			Button btn = new Button(String.valueOf(answer));
-			btn.setFont(new Font(24));
-			btn.setPrefSize(100, 100);
-			btn.setOnAction((e) -> answerConsumer.accept(answer));
-			add(btn, col, row);
-			col++;
-			if (col >= answers.size() / 2) {
+		if (answers.size() == 1) {
+			Button btn = createButton(answerConsumer, answers.get(0));
+			add(btn, 0, 0, 2, 1);
+		} else {
+			for (Integer answer : answers) {
+				Button btn = createButton(answerConsumer, answer);
+				add(btn, col, row);
 				row++;
-				col = 0;
+				if (row >= answers.size() / 2) {
+					col++;
+					row = 0;
+				}
 			}
 		}
+	}
+
+	private Button createButton(Consumer<Integer> answerConsumer, Integer answer) {
+		Button btn = new Button(String.valueOf(answer));
+		btn.setFont(new Font(24));
+		btn.setPrefSize(100, 100);
+		btn.setOnAction((e) -> answerConsumer.accept(answer));
+		return btn;
 	}
 
 	@Override

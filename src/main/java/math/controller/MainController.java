@@ -14,7 +14,7 @@ import math.model.Settings;
 import math.model.Stats;
 import math.ui.StartView;
 import math.ui.StatsView;
-import math.ui.TestView;
+import math.ui.QuizView;
 
 public class MainController {
 	private static final String SETTINGS_FILE = "settings.json";
@@ -85,11 +85,20 @@ public class MainController {
 		return stats;
 	}
 
-	public void startTest(Integer test, boolean withAnswers) {
-		TestController testController = new TestController(this);
-		TestView testView = new TestView(testController);
-		testController.start(testView, test, withAnswers);
-		stage.setScene(new Scene(testView, 500, 500));
+	public void startTest(Integer multiplier) {
+		QuizView quizView = new QuizView();
+		TestController testController = new TestController(this, quizView);
+		quizView.setQuizController(testController);
+		testController.start(multiplier);
+		stage.setScene(new Scene(quizView, 500, 500));
+	}
+
+	public void learn(Integer multiplier) {
+		QuizView quizView = new QuizView();
+		LearnController testController = new LearnController(this, quizView);
+		quizView.setQuizController(testController);
+		testController.start(multiplier);
+		stage.setScene(new Scene(quizView, 500, 500));
 	}
 
 	public void showStats() {

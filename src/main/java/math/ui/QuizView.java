@@ -13,36 +13,42 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import math.controller.TestController;
+import math.controller.QuizController;
+import math.controller.QuizControllerBase;
 
-public class TestView extends VBox {
+public class QuizView extends VBox {
 	private AnswerSelector answerSelector;
-	private final TestController testController;
+	private QuizController quizController;
 
-	public TestView(TestController testController) {
-		this.testController = testController;
+	public QuizView() {
 		setAlignment(Pos.CENTER);
+	}
+
+	public void setQuizController(QuizController quizController) {
+		this.quizController = quizController;
 	}
 
 	public void showQuestion(String question, List<Integer> answers) {
 		getChildren().clear();
-
-		Label label = new Label(question);
-		label.setFont(new Font(32));
-		label.setPadding(new Insets(10));
-		this.getChildren().add(label);
+		getChildren().add(createLabel(question));
 
 		if (answers != null) {
-			answerSelector = new AnswersView(answers, testController::answer);
+			answerSelector = new AnswersView(answers, quizController::answer);
 		} else {
-			answerSelector = new CalculatorView(testController::answer);
+			answerSelector = new CalculatorView(quizController::answer);
 		}
 		this.getChildren().add((Node) answerSelector);
 	}
 
+	public void showAnswer(String question, String answer) {
+		getChildren().clear();
+		getChildren().add(createLabel(question + " = " + answer));
+		getChildren().add(createOKButton());
+	}
+
 	public void feedBack(int answer, boolean correct, Runnable callback) {
 		Region region = answerSelector.getAnswerRegion(answer);
-		testController.getExecutor().submit(() -> animate(region, UI.background(correct ? Color.GREEN : Color.RED), callback));
+		quizController.getExecutor().submit(() -> animate(region, UI.background(correct ? Color.GREEN : Color.RED), callback));
 	}
 
 	private void animate(Region button, Background background, Runnable callback) {
@@ -75,7 +81,7 @@ public class TestView extends VBox {
 		getChildren().add(createLabel(formatTime(totalTime)));
 
 		Button btn = new Button("OK");
-		btn.setOnAction((e) -> testController.showStart());
+		btn.setOnAction((e) -> quizController.showStart());
 		getChildren().add(btn);
 	}
 
@@ -91,5 +97,13 @@ public class TestView extends VBox {
 		label.setPadding(new Insets(10));
 		label.setFont(new Font(32));
 		return label;
+	}
+
+	private Button createOKButton() {
+		Button btn = new Button("OK");
+		btn.setFont(new Font(24));
+		btn.setPrefSize(100, 50);
+		btn.setOnAction((e) -> quizController.nextQuestion());
+		return btn;
 	}
 }

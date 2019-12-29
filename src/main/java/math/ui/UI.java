@@ -17,9 +17,9 @@ public class UI {
 	}
 
 	public static Paint getColor(int value) {
-		if (value < 6) {
+		if (value < 7) {
 			return Color.RED;
-		} else if (value < 10) {
+		} else if (value < 9) {
 			return Color.YELLOW;
 		} else {
 			return Color.LIGHTGREEN;

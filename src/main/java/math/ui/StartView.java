@@ -1,57 +1,72 @@
 package math.ui;
 
 
+import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import math.controller.MainController;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class StartView extends VBox {
+    private static final String ALL = "0..9";
+    ComboBox comboBox;
 
-	public StartView(MainController mainController) {
-		setAlignment(Pos.CENTER);
+    public StartView(MainController mainController) {
+        setAlignment(Pos.CENTER);
 
-		CheckBox checkBox = new CheckBox("Show answers");
-		checkBox.setSelected(true);
-		checkBox.setPrefSize(250, 50);
-		this.getChildren().add(checkBox);
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(5);
+        grid.setVgap(5);
+        this.getChildren().add(grid);
 
-		GridPane grid = new GridPane();
-		grid.setAlignment(Pos.CENTER);
-		this.getChildren().add(grid);
+        comboBox = new ComboBox(FXCollections.observableArrayList(getMultipliers()));
+        comboBox.setPrefSize(310, 50);
+        comboBox.getSelectionModel().select(0);
+        grid.add(comboBox, 0, 0, 3, 1);
 
-		int row = 0;
-		int col = 0;
-		for (int i = 0; i < 10; i++) {
-			int test = i;
-			Button btn = new Button();
-			btn.setFont(new Font(24));
-			btn.setPrefSize(50, 50);
-			btn.setText(String.valueOf(test));
-			btn.setOnAction((e) -> mainController.startTest(test, checkBox.isSelected()));
-			grid.add(btn, col++, row);
-			if (col == 5) {
-				col = 0;
-				row++;
-			}
-		}
+        grid.add(createButton("Learn", () -> {
+            Integer multiplier = getMultiplier();
+            if (multiplier != null) {
+                mainController.learn(getMultiplier());
+            }
+        }), 0, 1);
+        grid.add(createButton("Test", () -> mainController.startTest(getMultiplier())), 1, 1);
+        grid.add(createButton("Stats", mainController::showStats), 2, 1);
+    }
 
-		Button btn = new Button();
-		btn.setText("0..9");
-		btn.setFont(new Font(24));
-		btn.setPrefSize(100, 50);
-		btn.setOnAction((event) -> mainController.startTest(null, checkBox.isSelected()));
-		grid.add(btn, 0, row + 2, 2, 1);
+    private Integer getMultiplier() {
+        int i = comboBox.getSelectionModel().getSelectedIndex();
+        if (i < 10) {
+            return i;
+        } else {
+            return null;
+        }
+    }
 
-		btn = new Button();
-		btn.setText("Stats");
-		btn.setFont(new Font(24));
-		btn.setPrefSize(150, 50);
-		btn.setOnAction((event) -> mainController.showStats());
-		grid.add(btn, 2, row + 2, 3, 1);
-	}
+    private Button createButton(String text, Runnable onAction) {
+        Button btn = new Button(text);
+        btn.setFont(new Font(24));
+        btn.setPrefSize(100, 50);
+        btn.setOnAction((event) -> onAction.run());
+        return btn;
+    }
+
+    private Collection<String> getMultipliers() {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(String.valueOf(i));
+        }
+        list.add(ALL);
+        return list;
+    }
 
 }
