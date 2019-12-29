@@ -71,6 +71,7 @@ public class LearnController extends QuizControllerBase {
 	}
 
 	public void nextQuestion() {
+		showStatus();
         questions = questions.stream().filter(it -> mainController.getStats().getScore(it.key()) < 9).collect(Collectors.toList());
         if (questions.isEmpty()) {
             endTest();
@@ -83,7 +84,13 @@ public class LearnController extends QuizControllerBase {
 		}
 	}
 
-    private void endTest() {
+	private void showStatus() {
+    	int sum = questions.stream().mapToInt(it -> mainController.getStats().getScore(it.key())).sum();
+    	int percent = (int) (sum / 90.0 * 100);
+		quizView.showStatus(percent + "%");
+	}
+
+	private void endTest() {
 		quizView.showResult("Done!", 0);
 	}
 }

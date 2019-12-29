@@ -36,6 +36,7 @@ public class TestController extends QuizControllerBase {
     private void showQuestion() {
         Question question = questions.get(index);
         quizView.showQuestion(question.toString(), null);
+        quizView.showStatus((index + 1) + " / " + questions.size());
         start = System.currentTimeMillis();
     }
 
