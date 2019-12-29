@@ -22,7 +22,7 @@ public class LearnController extends QuizControllerBase {
 
 	public void start(Integer multiplier) {
 		this.questions.clear();
-        questions.addAll(allQuestions.get(multiplier).subList(0, 2));
+        questions.addAll(allQuestions.get(multiplier));
 		Collections.shuffle(questions);
         nextQuestion();
 	}
