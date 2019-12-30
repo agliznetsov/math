@@ -7,9 +7,11 @@ public interface QuizController {
 
     void answer(int answer);
 
-    void showStart();
+    void mainMenu();
 
     void nextQuestion();
 
     ExecutorService getExecutor();
+
+    void restart();
 }

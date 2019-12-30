@@ -11,20 +11,33 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LearnController extends QuizControllerBase {
-    int index = 0;
+	Integer multiplier;
+    int index;
     List<Question> questions;
     List<String> keys;
-	List<LearnLevel> levels = Arrays.asList(LearnLevel.values());
+	final List<LearnLevel> levels = Arrays.asList(LearnLevel.values());
 
     public LearnController(MainController mainController, QuizView quizView) {
 		super(mainController, quizView);
 	}
 
 	public void start(Integer multiplier) {
-        questions = new ArrayList<>(allQuestions.get(multiplier));
-        keys = questions.stream().map(Question::key).collect(Collectors.toList());
+    	this.multiplier = multiplier;
+    	startTest();
+	}
+
+	@Override
+	public void restart() {
+    	keys.forEach(it -> mainController.getStats().setScore(it, LearnLevel.L3.getStartStep()));
+		startTest();
+	}
+
+	private void startTest() {
+		index = 0;
+		questions = new ArrayList<>(allQuestions.get(multiplier));
+		keys = questions.stream().map(Question::key).collect(Collectors.toList());
 		Collections.shuffle(questions);
-        nextQuestion();
+		nextQuestion();
 	}
 
 	private void showQuestion() {
@@ -91,6 +104,6 @@ public class LearnController extends QuizControllerBase {
 	}
 
 	private void endTest() {
-		quizView.showResult("Done!", 0);
+		quizView.showResult("Done!", null);
 	}
 }

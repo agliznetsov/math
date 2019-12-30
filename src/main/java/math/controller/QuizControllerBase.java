@@ -30,7 +30,7 @@ public abstract class QuizControllerBase implements QuizController {
     }
 
     @Override
-    public void showStart() {
+    public void mainMenu() {
         mainController.showStart();
     }
 

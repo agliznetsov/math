@@ -12,7 +12,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import math.controller.QuizController;
-import math.controller.QuizControllerBase;
 
 public class QuizView extends AnchorPane {
 	private AnswerSelector answerSelector;
@@ -60,7 +59,7 @@ public class QuizView extends AnchorPane {
 	public void showAnswer(String question, String answer) {
 		mainPane.getChildren().clear();
 		mainPane.getChildren().add(createLabel(question + " = " + answer));
-		mainPane.getChildren().add(createOKButton());
+		mainPane.getChildren().add(createButton("OK", quizController::nextQuestion));
 	}
 
 	public void feedBack(int answer, boolean correct, Runnable callback) {
@@ -91,15 +90,14 @@ public class QuizView extends AnchorPane {
 		}
 	}
 
-	public void showResult(String text, long totalTime) {
+	public void showResult(String text, Long totalTime) {
 		mainPane.getChildren().clear();
-
 		mainPane.getChildren().add(createLabel(text));
-		mainPane.getChildren().add(createLabel(formatTime(totalTime)));
-
-		Button btn = new Button("OK");
-		btn.setOnAction((e) -> quizController.showStart());
-		mainPane.getChildren().add(btn);
+		if (totalTime != null) {
+			mainPane.getChildren().add(createLabel(formatTime(totalTime)));
+		}
+		mainPane.getChildren().add(createButton("Restart", quizController::restart));
+		mainPane.getChildren().add(createButton("Close", quizController::mainMenu));
 	}
 
 	protected static String formatTime(long totalTime) {
@@ -116,11 +114,11 @@ public class QuizView extends AnchorPane {
 		return label;
 	}
 
-	private Button createOKButton() {
-		Button btn = new Button("OK");
-		btn.setFont(new Font(24));
+	private Button createButton(String text, Runnable action) {
+		Button btn = new Button(text);
+		btn.setFont(new Font(18));
 		btn.setPrefSize(100, 50);
-		btn.setOnAction((e) -> quizController.nextQuestion());
+		btn.setOnAction((e) -> action.run());
 		return btn;
 	}
 }

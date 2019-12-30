@@ -9,19 +9,28 @@ import java.util.List;
 
 public class TestController extends QuizControllerBase {
 
-    int index = 0;
-    int correctAnswers = 0;
-    long start = 0;
-    long totalTime = 0;
-    List<Question> questions = new ArrayList<>();
+    Integer multiplier;
+    int index;
+    int correctAnswers;
+    long start;
+    long totalTime;
+    List<Question> questions;
 
     public TestController(MainController mainController, QuizView quizView) {
         super(mainController, quizView);
     }
 
     public void start(Integer multiplier) {
+        this.multiplier = multiplier;
+        restart();
+    }
+
+    @Override
+    public void restart() {
         this.index = 0;
-        this.questions.clear();
+        this.totalTime = 0;
+        this.correctAnswers = 0;
+        this.questions = new ArrayList<>();
         if (multiplier != null) {
             questions.addAll(allQuestions.get(multiplier));
         } else {
@@ -32,7 +41,6 @@ public class TestController extends QuizControllerBase {
         Collections.shuffle(questions);
         showQuestion();
     }
-
     private void showQuestion() {
         Question question = questions.get(index);
         quizView.showQuestion(question.toString(), null);
