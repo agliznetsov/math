@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LearnController extends QuizControllerBase {
-
     int index = 0;
-    List<Question> questions = new ArrayList<>();
+    List<Question> questions;
+    List<String> keys;
 	List<LearnLevel> levels = Arrays.asList(LearnLevel.values());
 
     public LearnController(MainController mainController, QuizView quizView) {
@@ -21,8 +21,8 @@ public class LearnController extends QuizControllerBase {
 	}
 
 	public void start(Integer multiplier) {
-		this.questions.clear();
-        questions.addAll(allQuestions.get(multiplier));
+        questions = new ArrayList<>(allQuestions.get(multiplier));
+        keys = questions.stream().map(Question::key).collect(Collectors.toList());
 		Collections.shuffle(questions);
         nextQuestion();
 	}
@@ -85,7 +85,7 @@ public class LearnController extends QuizControllerBase {
 	}
 
 	private void showStatus() {
-    	int sum = questions.stream().mapToInt(it -> mainController.getStats().getScore(it.key())).sum();
+    	int sum = keys.stream().mapToInt(it -> mainController.getStats().getScore(it)).sum();
     	int percent = (int) (sum / 90.0 * 100);
 		quizView.showStatus(percent + "%");
 	}
