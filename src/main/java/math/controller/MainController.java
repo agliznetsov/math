@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.function.Supplier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +22,11 @@ public class MainController {
 	private static final String SETTINGS_FILE = "settings.json";
 	private static final String STATS_FILE = "stats.json";
 
-	private final ExecutorService executor = Executors.newSingleThreadExecutor();
+	private final ExecutorService executor = Executors.newCachedThreadPool(r -> {
+		Thread thread = new Thread(r);
+		thread.setDaemon(true);
+		return thread;
+	});
 	private final ObjectMapper objectMapper = new ObjectMapper();
 	private final Stage stage;
 	private final Settings settings;
@@ -86,11 +91,11 @@ public class MainController {
 		return stats;
 	}
 
-	public void startTest(Integer multiplier) {
+	public void startTest(Integer multiplier, Integer time) {
 		QuizView quizView = new QuizView();
 		TestController testController = new TestController(this, quizView);
 		quizView.setQuizController(testController);
-		testController.start(multiplier);
+		testController.start(multiplier, time);
 		stage.setScene(new Scene(quizView, 500, 500));
 	}
 

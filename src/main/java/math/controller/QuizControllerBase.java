@@ -38,4 +38,12 @@ public abstract class QuizControllerBase implements QuizController {
     public ExecutorService getExecutor() {
         return mainController.getExecutor();
     }
+
+    protected void sleep(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

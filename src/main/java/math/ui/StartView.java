@@ -8,13 +8,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import math.controller.MainController;
 import math.model.LearnLevel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class StartView extends VBox {
         grid.add(comboBox, 0, 0, 3, 1);
 
         grid.add(createLearnButton(), 0, 1);
-        grid.add(createButton("Test", () -> mainController.startTest(getMultiplier())), 1, 1);
+        grid.add(createTestButton(), 1, 1);
         grid.add(createButton("Stats", mainController::showStats), 2, 1);
     }
 
@@ -54,7 +54,7 @@ public class StartView extends VBox {
 
     private Button createButton(String text, Runnable onAction) {
         Button btn = new Button(text);
-        btn.setFont(new Font(24));
+        btn.setFont(new Font(18));
         btn.setPrefSize(100, 50);
         btn.setOnAction((event) -> onAction.run());
         return btn;
@@ -65,9 +65,22 @@ public class StartView extends VBox {
         MenuItem item = new MenuItem("Continue");
         item.setOnAction((e) -> learn(null));
         menuButton.getItems().add(item);
-        for(LearnLevel level : LearnLevel.values()) {
+        for (LearnLevel level : LearnLevel.values()) {
             item = new MenuItem(level.name());
             item.setOnAction((e) -> learn(level));
+            menuButton.getItems().add(item);
+        }
+        menuButton.setFont(new Font(18));
+        menuButton.setPrefSize(100, 50);
+        return menuButton;
+    }
+
+    private MenuButton createTestButton() {
+        MenuButton menuButton = new MenuButton("Test");
+        for (int v : Arrays.asList(5, 10, 15, 20, 25, 30)) {
+            int value = v;
+            MenuItem item = new MenuItem(String.valueOf(value));
+            item.setOnAction((e) -> mainController.startTest(getMultiplier(), value));
             menuButton.getItems().add(item);
         }
         menuButton.setFont(new Font(18));
@@ -78,7 +91,7 @@ public class StartView extends VBox {
     private void learn(LearnLevel level) {
         Integer multiplier = getMultiplier();
         if (multiplier != null) {
-            mainController.learn(getMultiplier(),level);
+            mainController.learn(getMultiplier(), level);
         }
     }
 

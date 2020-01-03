@@ -6,6 +6,8 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -18,12 +20,15 @@ public class QuizView extends AnchorPane {
 	private QuizController quizController;
 
 	private VBox mainPane;
-	private HBox bottomPane;
+	private VBox bottomPane;
+	private Canvas canvas;
+	private Label label;
 
 	public QuizView() {
 		mainPane = new VBox();
-		bottomPane = new HBox();
 		mainPane.setAlignment(Pos.CENTER);
+		bottomPane = new VBox();
+		bottomPane.setAlignment(Pos.CENTER);
 		getChildren().addAll(mainPane, bottomPane);
 
 		setTopAnchor(mainPane, 0.0);
@@ -33,6 +38,13 @@ public class QuizView extends AnchorPane {
 
 		setBottomAnchor(bottomPane, 5.0);
 		setRightAnchor(bottomPane, 5.0);
+		setLeftAnchor(bottomPane, 5.0);
+
+		canvas = new Canvas();
+		canvas.setWidth(490);
+		canvas.setHeight(10);
+		label = new Label();
+		bottomPane.getChildren().addAll(label, canvas);
 	}
 
 	public void setQuizController(QuizController quizController) {
@@ -40,8 +52,14 @@ public class QuizView extends AnchorPane {
 	}
 
 	public void showStatus(String text) {
-		bottomPane.getChildren().clear();
-		bottomPane.getChildren().add(new Label(text));
+		label.setText(text);
+	}
+
+	public void showTime(double time) {
+		GraphicsContext gr = canvas.getGraphicsContext2D();
+		gr.clearRect(0,0, canvas.getWidth(), canvas.getHeight());
+		gr.setFill(Color.RED);
+		gr.fillRect(0,0, canvas.getWidth() * time, canvas.getHeight());
 	}
 
 	public void showQuestion(String question, List<Integer> answers) {
@@ -91,6 +109,7 @@ public class QuizView extends AnchorPane {
 	}
 
 	public void showResult(String text, Long totalTime) {
+		showTime(0);
 		mainPane.getChildren().clear();
 		mainPane.getChildren().add(createLabel(text));
 		if (totalTime != null) {
