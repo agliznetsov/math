@@ -14,7 +14,6 @@ public class TestController extends QuizControllerBase {
     int index;
     int correctAnswers;
     long start;
-    long totalTime;
     List<Question> questions;
     final AtomicInteger time = new AtomicInteger();
     int timePerQuestion;
@@ -30,10 +29,10 @@ public class TestController extends QuizControllerBase {
     }
 
     public void restart() {
-        this.index = 0;
-        this.totalTime = 0;
-        this.correctAnswers = 0;
-        this.questions = new ArrayList<>();
+        start = System.currentTimeMillis();
+        index = 0;
+        correctAnswers = 0;
+        questions = new ArrayList<>();
         if (multiplier != null) {
             questions.addAll(allQuestions.get(multiplier));
         } else {
@@ -50,7 +49,6 @@ public class TestController extends QuizControllerBase {
         Question question = questions.get(index);
         quizView.showQuestion(question.toString(), null);
         quizView.showStatus((index + 1) + " / " + questions.size());
-        start = System.currentTimeMillis();
         time.set(timePerQuestion);
         showTime(time.get());
     }
@@ -63,7 +61,8 @@ public class TestController extends QuizControllerBase {
                 if (value > 0) {
                     showTime(value);
                 } else {
-                    Platform.runLater(this::nextQuestion);
+                    time.set(timePerQuestion);
+                    Platform.runLater(() -> answer(-1));
                 }
             }
         }
@@ -75,8 +74,6 @@ public class TestController extends QuizControllerBase {
 
     public void answer(int answer) {
         Question question = questions.get(index);
-        long end = System.currentTimeMillis();
-        totalTime += (end - start);
         boolean correct = answer == question.answer();
         if (correct) {
             correctAnswers++;
@@ -98,6 +95,7 @@ public class TestController extends QuizControllerBase {
     }
 
     private void endTest() {
+        long totalTime = System.currentTimeMillis() - start;
         quizView.showResult(correctAnswers + " / " + questions.size(), totalTime);
     }
 
