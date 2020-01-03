@@ -25,7 +25,7 @@ public class TestController extends QuizControllerBase {
 
     public void start(Integer multiplier, int time) {
         this.multiplier = multiplier;
-        this.timePerQuestion = time;
+        this.timePerQuestion = time * 1000;
         restart();
     }
 
@@ -57,8 +57,8 @@ public class TestController extends QuizControllerBase {
 
     private void timer() {
         while (index < questions.size()) {
-            sleep(1000);
-            int value = time.decrementAndGet();
+            sleep(50);
+            int value = time.addAndGet(-50);
             if (index < questions.size()) {
                 if (value > 0) {
                     showTime(value);
