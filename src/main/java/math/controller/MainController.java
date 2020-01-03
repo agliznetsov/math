@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import math.model.LearnLevel;
 import math.model.Settings;
 import math.model.Stats;
 import math.ui.StartView;
@@ -93,11 +94,11 @@ public class MainController {
 		stage.setScene(new Scene(quizView, 500, 500));
 	}
 
-	public void learn(Integer multiplier) {
+	public void learn(Integer multiplier, LearnLevel level) {
 		QuizView quizView = new QuizView();
-		LearnController testController = new LearnController(this, quizView);
-		quizView.setQuizController(testController);
-		testController.start(multiplier);
+		LearnController controller = new LearnController(this, quizView);
+		quizView.setQuizController(controller);
+		controller.start(multiplier, level);
 		stage.setScene(new Scene(quizView, 500, 500));
 	}
 

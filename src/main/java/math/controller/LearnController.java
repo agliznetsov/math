@@ -21,21 +21,14 @@ public class LearnController extends QuizControllerBase {
 		super(mainController, quizView);
 	}
 
-	public void start(Integer multiplier) {
+	public void start(Integer multiplier, LearnLevel level) {
     	this.multiplier = multiplier;
-    	startTest();
-	}
-
-	@Override
-	public void restart() {
-    	keys.forEach(it -> mainController.getStats().setScore(it, LearnLevel.L3.getStartStep()));
-		startTest();
-	}
-
-	private void startTest() {
 		index = 0;
 		questions = new ArrayList<>(allQuestions.get(multiplier));
 		keys = questions.stream().map(Question::key).collect(Collectors.toList());
+		if (level != null) {
+			keys.forEach(it -> mainController.getStats().setScore(it, level.getStartStep()));
+		}
 		Collections.shuffle(questions);
 		nextQuestion();
 	}

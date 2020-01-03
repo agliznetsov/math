@@ -25,7 +25,6 @@ public class TestController extends QuizControllerBase {
         restart();
     }
 
-    @Override
     public void restart() {
         this.index = 0;
         this.totalTime = 0;

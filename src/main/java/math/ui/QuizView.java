@@ -96,7 +96,6 @@ public class QuizView extends AnchorPane {
 		if (totalTime != null) {
 			mainPane.getChildren().add(createLabel(formatTime(totalTime)));
 		}
-		mainPane.getChildren().add(createButton("Restart", quizController::restart));
 		mainPane.getChildren().add(createButton("Close", quizController::mainMenu));
 	}
 
