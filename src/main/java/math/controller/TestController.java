@@ -1,6 +1,7 @@
 package math.controller;
 
 import javafx.application.Platform;
+import math.model.Multiplier;
 import math.model.Question;
 import math.ui.QuizView;
 
@@ -22,8 +23,8 @@ public class TestController extends QuizControllerBase {
         super(mainController, quizView);
     }
 
-    public void start(Integer multiplier, int time) {
-        this.multiplier = multiplier;
+    public void start(Multiplier multiplier, int time) {
+        this.multiplier = multiplier.getValue();
         this.timePerQuestion = time * 1000;
         restart();
     }

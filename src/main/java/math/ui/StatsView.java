@@ -16,6 +16,7 @@ public class StatsView extends VBox {
 		createStats(mainController);
 		createOK(mainController);
 		setAlignment(Pos.CENTER);
+		setSpacing(10);
 	}
 
 	private void createOK(MainController mainController) {

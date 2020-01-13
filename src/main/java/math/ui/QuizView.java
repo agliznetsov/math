@@ -15,6 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import math.controller.QuizController;
 
+import static math.ui.UI.WIDTH;
+
 public class QuizView extends AnchorPane {
 	private AnswerSelector answerSelector;
 	private QuizController quizController;
@@ -23,6 +25,7 @@ public class QuizView extends AnchorPane {
 	private VBox bottomPane;
 	private Canvas canvas;
 	private Label label;
+	private Button back;
 
 	public QuizView() {
 		mainPane = new VBox();
@@ -40,11 +43,14 @@ public class QuizView extends AnchorPane {
 		setRightAnchor(bottomPane, 5.0);
 		setLeftAnchor(bottomPane, 5.0);
 
+		back = new Button("Cancel");
+		back.setOnAction(e -> quizController.mainMenu());
+
 		canvas = new Canvas();
-		canvas.setWidth(490);
+		canvas.setWidth(WIDTH - 10);
 		canvas.setHeight(10);
 		label = new Label();
-		bottomPane.getChildren().addAll(label, canvas);
+		bottomPane.getChildren().addAll(label, back, canvas);
 	}
 
 	public void setQuizController(QuizController quizController) {

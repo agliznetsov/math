@@ -12,6 +12,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 public class UI {
+	public static final int WIDTH = 600;
+	public static final int HEIGHT = 500;
+
 	public static Background background(Paint color) {
 		return new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY));
 	}

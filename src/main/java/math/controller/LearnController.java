@@ -1,6 +1,7 @@
 package math.controller;
 
 import math.model.LearnLevel;
+import math.model.Multiplier;
 import math.model.Question;
 import math.ui.QuizView;
 
@@ -21,10 +22,10 @@ public class LearnController extends QuizControllerBase {
 		super(mainController, quizView);
 	}
 
-	public void start(Integer multiplier, LearnLevel level) {
-    	this.multiplier = multiplier;
+	public void start(Multiplier m, LearnLevel level) {
+    	this.multiplier = m.getValue();
 		index = 0;
-		questions = new ArrayList<>(allQuestions.get(multiplier));
+		questions = new ArrayList<>(allQuestions.get(this.multiplier));
 		keys = questions.stream().map(Question::key).collect(Collectors.toList());
 		if (level != null) {
 			keys.forEach(it -> mainController.getStats().setScore(it, level.getStartStep()));

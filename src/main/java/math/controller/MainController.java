@@ -12,11 +12,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import math.model.LearnLevel;
+import math.model.Multiplier;
 import math.model.Settings;
 import math.model.Stats;
 import math.ui.StartView;
 import math.ui.StatsView;
 import math.ui.QuizView;
+
+import static math.ui.UI.HEIGHT;
+import static math.ui.UI.WIDTH;
 
 public class MainController {
 	private static final String SETTINGS_FILE = "settings.json";
@@ -91,28 +95,30 @@ public class MainController {
 		return stats;
 	}
 
-	public void startTest(Integer multiplier, Integer time) {
+	public void startTest(Multiplier multiplier, Integer time) {
 		QuizView quizView = new QuizView();
 		TestController testController = new TestController(this, quizView);
 		quizView.setQuizController(testController);
 		testController.start(multiplier, time);
-		stage.setScene(new Scene(quizView, 500, 500));
+		stage.setScene(new Scene(quizView, WIDTH, HEIGHT));
 	}
 
-	public void learn(Integer multiplier, LearnLevel level) {
-		QuizView quizView = new QuizView();
-		LearnController controller = new LearnController(this, quizView);
-		quizView.setQuizController(controller);
-		controller.start(multiplier, level);
-		stage.setScene(new Scene(quizView, 500, 500));
+	public void learn(Multiplier multiplier, LearnLevel level) {
+		if (multiplier.getValue() != null) {
+			QuizView quizView = new QuizView();
+			LearnController controller = new LearnController(this, quizView);
+			quizView.setQuizController(controller);
+			controller.start(multiplier, level);
+			stage.setScene(new Scene(quizView, WIDTH, HEIGHT));
+		}
 	}
 
 	public void showStats() {
-		stage.setScene(new Scene(new StatsView(this), 500, 500));
+		stage.setScene(new Scene(new StatsView(this), WIDTH, HEIGHT));
 	}
 
 	public void showStart() {
-		stage.setScene(new Scene(new StartView(this), 500, 500));
+		stage.setScene(new Scene(new StartView(this), WIDTH, HEIGHT));
 	}
 
 	public void shutdown() {

@@ -1,107 +1,88 @@
 package math.ui;
 
 
-import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import math.controller.MainController;
 import math.model.LearnLevel;
+import math.model.Multiplier;
+import math.model.Settings;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 public class StartView extends VBox {
-    private static final String ALL = "0..9";
-    ComboBox comboBox;
     MainController mainController;
+    ButtonGroup<Multiplier> multiplier;
+    ButtonGroup<LearnLevel> learnLevel;
+    ButtonGroup<Integer> time;
 
     public StartView(MainController mainController) {
         this.mainController = mainController;
         setAlignment(Pos.CENTER);
+        setSpacing(5);
 
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setHgap(5);
-        grid.setVgap(5);
-        this.getChildren().add(grid);
+        multiplier = new ButtonGroup<>(35, 50, 18);
+        multiplier.setLabels(Arrays.asList(Multiplier.values()));
 
-        comboBox = new ComboBox(FXCollections.observableArrayList(getMultipliers()));
-        comboBox.setPrefSize(310, 50);
-        comboBox.getSelectionModel().select(0);
-        grid.add(comboBox, 0, 0, 3, 1);
+        learnLevel = new ButtonGroup<>(105, 50, 18);
+        learnLevel.setLabels(Arrays.asList(LearnLevel.values()));
 
-        grid.add(createLearnButton(), 0, 1);
-        grid.add(createTestButton(), 1, 1);
-        grid.add(createButton("Stats", mainController::showStats), 2, 1);
+        time = new ButtonGroup<>(68, 50, 18);
+        time.setLabels(Arrays.asList(5, 10, 15, 20, 25, 30));
+
+        addRow(multiplier);
+        addRow(learnLevel);
+        addRow(time);
+        addRow(createButton("Learn", this::learn),
+                createButton("Test", this::test),
+                createButton("Stats", mainController::showStats)
+        );
+
+        loadSettings();
     }
 
-    private Integer getMultiplier() {
-        int i = comboBox.getSelectionModel().getSelectedIndex();
-        if (i < 10) {
-            return i;
-        } else {
-            return null;
-        }
+    private void loadSettings() {
+        Settings settings = mainController.getSettings();
+        learnLevel.selectLabel(LearnLevel.valueOf(settings.getLearnLevel()));
+        multiplier.selectLabel(Multiplier.valueOf(settings.getMultiplier()));
+        time.selectLabel(settings.getTime());
+    }
+
+    private void updateSettings() {
+        Settings settings = mainController.getSettings();
+        settings.setLearnLevel(learnLevel.getLabel().name());
+        settings.setMultiplier(multiplier.getLabel().name());
+        settings.setTime(time.getLabel());
+        mainController.saveSettings();
+    }
+
+    private void test() {
+        updateSettings();
+        mainController.startTest(multiplier.getLabel(), time.getLabel());
+    }
+
+    private void learn() {
+        updateSettings();
+        mainController.learn(multiplier.getLabel(), learnLevel.getLabel());
+    }
+
+    private void addRow(Node... controls) {
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(5);
+        hBox.getChildren().addAll(controls);
+        this.getChildren().add(hBox);
     }
 
     private Button createButton(String text, Runnable onAction) {
         Button btn = new Button(text);
         btn.setFont(new Font(18));
-        btn.setPrefSize(100, 50);
+        btn.setPrefSize(140, 50);
         btn.setOnAction((event) -> onAction.run());
         return btn;
     }
-
-    private MenuButton createLearnButton() {
-        MenuButton menuButton = new MenuButton("Learn");
-        MenuItem item = new MenuItem("Continue");
-        item.setOnAction((e) -> learn(null));
-        menuButton.getItems().add(item);
-        for (LearnLevel level : LearnLevel.values()) {
-            item = new MenuItem(level.name());
-            item.setOnAction((e) -> learn(level));
-            menuButton.getItems().add(item);
-        }
-        menuButton.setFont(new Font(18));
-        menuButton.setPrefSize(100, 50);
-        return menuButton;
-    }
-
-    private MenuButton createTestButton() {
-        MenuButton menuButton = new MenuButton("Test");
-        for (int v : Arrays.asList(5, 10, 15, 20, 25, 30)) {
-            int value = v;
-            MenuItem item = new MenuItem(String.valueOf(value));
-            item.setOnAction((e) -> mainController.startTest(getMultiplier(), value));
-            menuButton.getItems().add(item);
-        }
-        menuButton.setFont(new Font(18));
-        menuButton.setPrefSize(100, 50);
-        return menuButton;
-    }
-
-    private void learn(LearnLevel level) {
-        Integer multiplier = getMultiplier();
-        if (multiplier != null) {
-            mainController.learn(getMultiplier(), level);
-        }
-    }
-
-    private Collection<String> getMultipliers() {
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            list.add(String.valueOf(i));
-        }
-        list.add(ALL);
-        return list;
-    }
-
 }
