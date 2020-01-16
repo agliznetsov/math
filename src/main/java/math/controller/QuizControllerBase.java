@@ -1,5 +1,6 @@
 package math.controller;
 
+import math.model.Operation;
 import math.model.Question;
 import math.ui.QuizView;
 
@@ -7,15 +8,19 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 
 public abstract class QuizControllerBase implements QuizController {
-    protected static Map<Integer, List<Question>> allQuestions = new HashMap<>();
+    protected static Map<Operation, Map<Integer, List<Question>>> allQuestions = new HashMap<>();
 
     static {
-        for (int b = 0; b < 10; b++) {
-            List<Question> list = new ArrayList<>();
-            for (int a = 0; a < 10; a++) {
-                list.add(new Question(a, b));
+        for(Operation op : Operation.values()) {
+            Map<Integer, List<Question>> map = new HashMap<>();
+            for (int b = 0; b < 10; b++) {
+                List<Question> list = new ArrayList<>();
+                for (int a = 0; a < 10; a++) {
+                    list.add(new Question(op, a, b));
+                }
+                map.put(b, list);
             }
-            allQuestions.put(b, list);
+            allQuestions.put(op, map);
         }
     }
 

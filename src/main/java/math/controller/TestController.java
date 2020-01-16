@@ -2,6 +2,7 @@ package math.controller;
 
 import javafx.application.Platform;
 import math.model.Multiplier;
+import math.model.Operation;
 import math.model.Question;
 import math.ui.QuizView;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TestController extends QuizControllerBase {
+    Operation op;
     Integer multiplier;
     int index;
     int correctAnswers;
@@ -23,7 +25,8 @@ public class TestController extends QuizControllerBase {
         super(mainController, quizView);
     }
 
-    public void start(Multiplier multiplier, int time) {
+    public void start(Operation op, Multiplier multiplier, int time) {
+        this.op = op;
         this.multiplier = multiplier.getValue();
         this.timePerQuestion = time * 1000;
         restart();
@@ -35,10 +38,10 @@ public class TestController extends QuizControllerBase {
         correctAnswers = 0;
         questions = new ArrayList<>();
         if (multiplier != null) {
-            questions.addAll(allQuestions.get(multiplier));
+            questions.addAll(allQuestions.get(op).get(multiplier));
         } else {
             for (int i = 0; i < 10; i++) {
-                questions.add(allQuestions.get(i).get(random.nextInt(10)));
+                questions.add(allQuestions.get(op).get(i).get(random.nextInt(10)));
             }
         }
         Collections.shuffle(questions);

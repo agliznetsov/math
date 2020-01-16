@@ -2,6 +2,7 @@ package math.controller;
 
 import math.model.LearnLevel;
 import math.model.Multiplier;
+import math.model.Operation;
 import math.model.Question;
 import math.ui.QuizView;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LearnController extends QuizControllerBase {
+	Operation op;
 	Integer multiplier;
     int index;
     List<Question> questions;
@@ -22,10 +24,11 @@ public class LearnController extends QuizControllerBase {
 		super(mainController, quizView);
 	}
 
-	public void start(Multiplier m, LearnLevel level) {
+	public void start(Operation op, Multiplier m, LearnLevel level) {
+    	this.op = op;
     	this.multiplier = m.getValue();
 		index = 0;
-		questions = new ArrayList<>(allQuestions.get(this.multiplier));
+		questions = new ArrayList<>(allQuestions.get(this.op).get(this.multiplier));
 		keys = questions.stream().map(Question::key).collect(Collectors.toList());
 		if (level != null) {
 			keys.forEach(it -> mainController.getStats().setScore(it, level.getStartStep()));
@@ -54,7 +57,7 @@ public class LearnController extends QuizControllerBase {
 		questionAnswers = new ArrayList<>();
 		questionAnswers.add(questions.get(index).answer());
 		while (questionAnswers.size() < count) {
-			int a = allQuestions.get(random.nextInt(10)).get(random.nextInt(10)).answer();
+			int a = allQuestions.get(op).get(random.nextInt(10)).get(random.nextInt(10)).answer();
 			if (!questionAnswers.contains(a)) {
 				questionAnswers.add(a);
 			}

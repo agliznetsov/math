@@ -34,8 +34,4 @@ public class Stats {
     public void setScore(String key, int value) {
         scores.put(key, value);
     }
-
-    public int getAvgScore(Predicate<String> predicate) {
-        return 0;
-    }
 }

@@ -16,7 +16,7 @@ public class ButtonGroup<T> extends HBox {
     private double bWidth = 50;
     private double bHeight = 50;
     private double fontSize = 18;
-    private T label;
+    private T value;
 
     public ButtonGroup(double width, double height, double fontSize) {
         this.setAlignment(Pos.CENTER);
@@ -39,11 +39,11 @@ public class ButtonGroup<T> extends HBox {
     public void selectLabel(T label) {
         buttons.values().forEach(it -> activate(it, false));
         activate(buttons.get(label), true);
-        this.label = label;
+        this.value = label;
     }
 
-    public T getLabel() {
-        return label;
+    public T getValue() {
+        return value;
     }
 
     private void activate(Button button, boolean activated) {

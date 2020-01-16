@@ -93,18 +93,18 @@ public class QuizView extends AnchorPane {
 
 	private void animate(Region button, Background background, Runnable callback) {
 		Node node = (Node) answerSelector;
-		node.setDisable(true);
+		Platform.runLater(() -> node.setDisable(true));
 		Background original = button.getBackground();
 		for (int i = 0; i < 3; i++) {
-			button.setBackground(background);
+			Platform.runLater(() -> button.setBackground(background));
 			sleep(50);
-			button.setBackground(original);
+			Platform.runLater(() -> button.setBackground(original));
 			sleep(50);
 		}
 		if (callback != null) {
 			Platform.runLater(callback);
 		}
-		node.setDisable(false);
+		Platform.runLater(() -> node.setDisable(false));
 	}
 
 	private void sleep(int value) {

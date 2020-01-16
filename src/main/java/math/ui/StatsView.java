@@ -8,12 +8,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import math.controller.MainController;
+import math.model.Operation;
 import math.model.Question;
 
 public class StatsView extends VBox {
 
-	public StatsView(MainController mainController) {
-		createStats(mainController);
+	public StatsView(MainController mainController, Operation op) {
+		createStats(mainController, op);
 		createOK(mainController);
 		setAlignment(Pos.CENTER);
 		setSpacing(10);
@@ -28,7 +29,7 @@ public class StatsView extends VBox {
 		this.getChildren().add(btn);
 	}
 
-	private void createStats(MainController mainController) {
+	private void createStats(MainController mainController, Operation op) {
 		GridPane grid = new GridPane();
 		grid.setGridLinesVisible(true);
 		grid.setAlignment(Pos.CENTER);
@@ -50,7 +51,7 @@ public class StatsView extends VBox {
 				if (i == 0) {
 					label.setText(String.valueOf(multiplier));
 				} else {
-					setValue(label, mainController.getStats().getScore(new Question(i - 1, multiplier).key()));
+					setValue(label, mainController.getStats().getScore(new Question(op, i - 1, multiplier).key()));
 				}
 				label.setPrefSize(50, 10);
 				label.setPadding(new Insets(5));
