@@ -4,7 +4,6 @@ import lombok.Data;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Predicate;
 
 @Data
 public class Stats {

@@ -22,6 +22,7 @@ import static math.ui.UI.WIDTH;
 public class MainController {
 	private static final String SETTINGS_FILE = "settings.json";
 	private static final String STATS_FILE = "stats.json";
+	private static final String RESULTS_FILE = "results.json";
 
 	private final ExecutorService executor = Executors.newCachedThreadPool(r -> {
 		Thread thread = new Thread(r);
@@ -32,11 +33,13 @@ public class MainController {
 	private final Stage stage;
 	private final Settings settings;
 	private final Stats stats;
+	private final Stats results;
 
 	public MainController(Stage stage) {
 		this.stage = stage;
 		settings = loadFile(SETTINGS_FILE, Settings.class, Settings::new);
 		stats = loadFile(STATS_FILE, Stats.class, Stats::new);
+		results = loadFile(RESULTS_FILE, Stats.class, Stats::new);
 	}
 
 	public ExecutorService getExecutor() {
@@ -69,6 +72,10 @@ public class MainController {
 		saveToFile(stats, STATS_FILE);
 	}
 
+	public void saveResults() {
+		saveToFile(results, RESULTS_FILE);
+	}
+
 	private void saveToFile(Object object, String fileName) {
 		try {
 			File file = getFile(fileName);
@@ -90,6 +97,10 @@ public class MainController {
 
 	public Stats getStats() {
 		return stats;
+	}
+
+	public Stats getResults() {
+		return results;
 	}
 
 	public void startTest(Operation op, Multiplier multiplier, Integer time) {

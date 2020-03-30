@@ -51,7 +51,7 @@ public class StatsView extends VBox {
 				if (i == 0) {
 					label.setText(String.valueOf(multiplier));
 				} else {
-					setValue(label, mainController.getStats().getScore(new Question(op, i - 1, multiplier).key()));
+					setValue(label, mainController.getResults().getScore(new Question(op, i - 1, multiplier).key()));
 				}
 				label.setPrefSize(50, 10);
 				label.setPadding(new Insets(5));

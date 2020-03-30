@@ -81,11 +81,11 @@ public class TestController extends QuizControllerBase {
         boolean correct = answer == question.answer();
         if (correct) {
             correctAnswers++;
-            mainController.getStats().incrementScore(question.key());
+            mainController.getResults().incrementScore(question.key());
         } else {
-            mainController.getStats().decrementScore(question.key());
+            mainController.getResults().decrementScore(question.key());
         }
-        mainController.saveStats();
+        mainController.saveResults();
         quizView.feedBack(answer, correct, this::nextQuestion);
     }
 
